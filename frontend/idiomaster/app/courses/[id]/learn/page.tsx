@@ -10,6 +10,36 @@ import { Progress } from "@/components/ui/progress"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
+// Add these type definitions at the top of the file, after imports
+interface VideoContent {
+  type: "video";
+  content: {
+    videoUrl: string;
+    transcript: string;
+    description: string;
+  };
+}
+
+interface ExerciseContent {
+  type: "exercise";
+  content: {
+    instructions: string;
+    resources: string[];
+    submissionType: string;
+  };
+}
+
+type Lesson = {
+  id: number;
+  title: string;
+  duration: string;
+} & (VideoContent | ExerciseContent);
+
+// Add this helper function after the type definitions
+function isExerciseLesson(lesson: Lesson): lesson is ExerciseContent & { id: number; title: string; duration: string } {
+  return lesson.type === "exercise";
+}
+
 // Sample course data
 const coursesData = [
   {
@@ -121,8 +151,8 @@ export default function CourseLearnPage() {
   }
 
   // Flatten all lessons for easier navigation
-  const allLessons = course.syllabus.flatMap((section) => section.lessons)
-  const currentLesson = allLessons.find((lesson) => lesson.id === currentLessonId)
+  const allLessons = course.syllabus.flatMap((section) => section.lessons) as Lesson[]
+  const currentLesson = allLessons.find((lesson) => lesson.id === currentLessonId) as Lesson
   const currentLessonIndex = allLessons.findIndex((lesson) => lesson.id === currentLessonId)
   const nextLesson = allLessons[currentLessonIndex + 1]
   const prevLesson = allLessons[currentLessonIndex - 1]
@@ -287,12 +317,16 @@ export default function CourseLearnPage() {
               <div className="rounded-lg border p-6">
                 <h2 className="mb-4 text-xl font-semibold">Exercise Instructions</h2>
                 <p className="mb-4">{currentLesson.content.instructions}</p>
-                <h3 className="mb-2 font-medium">Resources</h3>
-                <ul className="mb-6 list-inside list-disc space-y-1">
-                  {currentLesson.content.resources.map((resource, index) => (
-                    <li key={index}>{resource}</li>
-                  ))}
-                </ul>
+                {isExerciseLesson(currentLesson) && (
+                  <>
+                    <h3 className="mb-2 font-medium">Resources</h3>
+                    <ul className="mb-6 list-inside list-disc space-y-1">
+                      {currentLesson.content.resources.map((resource, index) => (
+                        <li key={index}>{resource}</li>
+                      ))}
+                    </ul>
+                  </>
+                )}
                 <div className="flex justify-end">
                   <Button>Submit Exercise</Button>
                 </div>

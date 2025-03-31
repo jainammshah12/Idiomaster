@@ -10,6 +10,7 @@ import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
 import { Slider } from "@/components/ui/slider"
+import Navbar from "@/components/layout/navbar"
 
 // Sample course data
 const courses = [
@@ -104,21 +105,7 @@ export default function CoursesPage() {
 
   return (
     <div className="min-h-screen bg-background ml-5 mr-5 ">
-      <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <div className="container flex h-14 pl-5 pr-5 items-center">
-          <Link href="/" className="flex items-center space-x-2 font-bold">
-            <span>EduLearn</span>
-          </Link>
-          <nav className="ml-auto flex gap-4 sm:gap-6">
-            <Link href="/login" className="text-sm font-medium">
-              Login
-            </Link>
-            <Link href="/register" className="text-sm font-medium">
-              Register
-            </Link>
-          </nav>
-        </div>
-      </header>
+      <Navbar />
       <main className="container py-8">
         <div className="flex flex-col space-y-6">
           <div className="flex flex-col space-y-4 md:flex-row md:items-center md:justify-between md:space-y-0">

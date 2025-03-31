@@ -9,6 +9,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import Navbar from "@/components/layout/navbar"
 
 // Sample course data
 const coursesData = [
@@ -152,21 +153,7 @@ export default function CourseDetailPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      <header className="sticky top-0 z-50 w-full border-b ml-5 mr-5 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <div className="container flex h-14 items-center">
-          <Link href="/" className="flex items-center space-x-2 font-bold">
-            <span>EduLearn</span>
-          </Link>
-          <nav className="ml-auto flex gap-4 sm:gap-6">
-            <Link href="/login" className="text-sm font-medium">
-              Login
-            </Link>
-            <Link href="/register" className="text-sm font-medium">
-              Register
-            </Link>
-          </nav>
-        </div>
-      </header>
+      <Navbar />
 
       <div className="bg-muted py-12">
         <div className="container grid gap-8 md:grid-cols-2">
