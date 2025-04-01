@@ -37,7 +37,7 @@ export default function SettingsPage() {
             <Card className="overflow-hidden">
               <button
                 className={`p-4 w-full text-left border-b ${
-                  activeTab === "interface" ? "bg-muted" : ""
+                  activeTab === "interface" ? "bg-primary text-primary-foreground" : "bg-background hover:bg-muted/50"
                 }`}
                 onClick={() => setActiveTab("interface")}
                 aria-selected={activeTab === "interface"}
@@ -47,7 +47,7 @@ export default function SettingsPage() {
               </button>
               <button
                 className={`p-4 w-full text-left border-b ${
-                  activeTab === "notifications" ? "bg-muted" : ""
+                  activeTab === "notifications" ? "bg-primary text-primary-foreground" : "bg-background hover:bg-muted/50"
                 }`}
                 onClick={() => setActiveTab("notifications")}
                 aria-selected={activeTab === "notifications"}
@@ -57,7 +57,7 @@ export default function SettingsPage() {
               </button>
               <button
                 className={`p-4 w-full text-left border-b ${
-                  activeTab === "focus" ? "bg-muted" : ""
+                  activeTab === "focus" ? "bg-primary text-primary-foreground" : "bg-background hover:bg-muted/50"
                 }`}
                 onClick={() => setActiveTab("focus")}
                 aria-selected={activeTab === "focus"}
@@ -67,7 +67,7 @@ export default function SettingsPage() {
               </button>
               <button
                 className={`p-4 w-full text-left border-b ${
-                  activeTab === "accessibility" ? "bg-muted" : ""
+                  activeTab === "accessibility" ? "bg-primary text-primary-foreground" : "bg-background hover:bg-muted/50"
                 }`}
                 onClick={() => setActiveTab("accessibility")}
                 aria-selected={activeTab === "accessibility"}
@@ -77,7 +77,7 @@ export default function SettingsPage() {
               </button>
               <button
                 className={`p-4 w-full text-left ${
-                  activeTab === "security" ? "bg-muted" : ""
+                  activeTab === "security" ? "bg-primary text-primary-foreground" : "bg-background hover:bg-muted/50"
                 }`}
                 onClick={() => setActiveTab("security")}
                 aria-selected={activeTab === "security"}
