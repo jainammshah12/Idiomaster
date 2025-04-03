@@ -1,13 +1,18 @@
-import Link from "next/link"
-import { ArrowRight } from "lucide-react"
+"use client";
 
-import { Button } from "@/components/ui/button"
-import Navbar from "@/components/layout/navbar"
+import Link from "next/link";
+import { ArrowRight } from "lucide-react";
+import { useState } from "react";
+
+import { Button } from "@/components/ui/button";
+import Navbar from "@/components/layout/navbar";
 
 export default function Home() {
+  const [loggedIn, setLoggedIn] = useState(false);
+
   return (
     <div className="flex min-h-screen flex-col">
-      <Navbar />
+      <Navbar loggedIn={loggedIn} setLoggedIn={setLoggedIn} />
       <main className="flex-1">
         <section className="w-full py-12 md:py-24 lg:py-32 xl:py-48">
           <div className="container px-4 md:px-6">
@@ -26,9 +31,9 @@ export default function Home() {
                     Browse Courses <ArrowRight className="ml-2 h-4 w-4" />
                   </Button>
                 </Link>
-                <Link href="/register">
+                <Link href="/login">
                   <Button variant="outline" className="px-8">
-                    Sign Up
+                    Sign In
                   </Button>
                 </Link>
               </div>
@@ -79,6 +84,6 @@ export default function Home() {
         </div>
       </footer>
     </div>
-  )
+  );
 }
 
