@@ -11,9 +11,12 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
 import { Slider } from "@/components/ui/slider"
 import Navbar from "@/components/layout/navbar"
+import LoginPage from "@/app/login/page";
+
 
 // Sample course data
 const courses = [
+  
   {
     id: 1,
     title: "Introduction to Web Development",
@@ -92,6 +95,7 @@ export default function CoursesPage() {
   const [searchTerm, setSearchTerm] = useState("")
   const [selectedCategory, setSelectedCategory] = useState("all")
   const [selectedLevel, setSelectedLevel] = useState("all")
+  const [loggedIn, setLoggedIn] = useState(false); 
 
   const filteredCourses = courses.filter((course) => {
     const matchesSearch =
@@ -105,7 +109,7 @@ export default function CoursesPage() {
 
   return (
     <div className="min-h-screen bg-background ml-5 mr-5 ">
-      <Navbar />
+      <Navbar loggedIn ={loggedIn} setLoggedIn={setLoggedIn} />
       <main className="container py-8">
         <div className="flex flex-col space-y-6">
           <div className="flex flex-col space-y-4 md:flex-row md:items-center md:justify-between md:space-y-0">
