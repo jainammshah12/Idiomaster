@@ -85,37 +85,61 @@ useEffect(() => {
   )
 }, [theme, fontSize, fontFamily, layoutDensity, appliedSettings])
 
-// Define the theme colors for preview and application
-const themeColors: Record<string, {bg: string, text: string, accent: string}> = {
+// Define the theme colors as HSL values optimized for neurodiverse users
+const themeColors: Record<string, {
+  background: string,
+  foreground: string,
+  primary: string,
+  secondary: string,
+  accent: string
+}> = {
   default: {
-    bg: "var(--background, white)",
-    text: "var(--foreground, black)",
-    accent: "var(--primary, #3b82f6)"
+    // Standard but with slightly reduced contrast
+    background: "210 40% 98%",
+    foreground: "210 50% 20%",
+    primary: "210 100% 50%",
+    secondary: "200 100% 45%",
+    accent: "220 30% 90%"
   },
   lowContrast: {
-    bg: "#f8f9fa",
-    text: "#495057",
-    accent: "#6c757d"
+    // Lower contrast for visual sensitivity
+    background: "200 15% 96%",
+    foreground: "200 10% 35%",
+    primary: "200 30% 55%",
+    secondary: "200 25% 65%",
+    accent: "200 20% 90%"
   },
   focus: {
-    bg: "#121212",
-    text: "#e0e0e0",
-    accent: "#9333ea"
+    // Dark mode with reduced blue light
+    background: "230 15% 15%",
+    foreground: "40 30% 90%",
+    primary: "280 60% 60%",
+    secondary: "250 40% 60%",
+    accent: "260 30% 40%"
   },
   calm: {
-    bg: "#f0f9ff",
-    text: "#0c4a6e",
-    accent: "#0d9488"
+    // Soft blue - good for anxiety reduction (research backed)
+    background: "195 30% 95%",
+    foreground: "200 50% 25%",
+    primary: "180 50% 40%",
+    secondary: "190 40% 50%",
+    accent: "185 30% 85%"
   },
   reading: {
-    bg: "#fffbeb",
-    text: "#78350f",
-    accent: "#d97706"
+    // Cream/beige good for dyslexia and extended reading
+    background: "40 30% 96%",
+    foreground: "30 60% 25%",
+    primary: "35 80% 45%",
+    secondary: "25 70% 55%",
+    accent: "40 40% 88%"
   },
   custom: {
-    bg: "linear-gradient(to right bottom, #fff1f2, #f0f9ff)",
-    text: "#2e1065",
-    accent: "linear-gradient(to right, #ec4899, #3b82f6)"
+    // Soft colors that work well for ADHD and autism spectrum
+    background: "180 20% 97%",
+    foreground: "210 50% 25%",
+    primary: "170 70% 40%",
+    secondary: "220 70% 50%",
+    accent: "200 30% 90%"
   }
 };
 
@@ -147,30 +171,29 @@ const applySettingsGlobally = (
   }
   document.documentElement.style.setProperty('--spacing-base', densityMap[currentLayoutDensity] || densityMap.balance)
   
-  // Apply theme
-  // First remove all theme classes
-  document.documentElement.classList.remove(
-    "theme-default", "theme-lowContrast", "theme-focus", 
-    "theme-calm", "theme-reading", "theme-custom"
-  );
-  
-  // Then add current theme class
-  document.documentElement.classList.add(`theme-${currentTheme}`);
-  
-  // Apply CSS variables for the theme
+  // Apply theme colors
   if (themeColors[currentTheme]) {
     const colors = themeColors[currentTheme];
     
-    // Apply background color
-    document.documentElement.style.setProperty('--theme-bg', colors.bg);
+    // Set CSS HSL variables
+    document.documentElement.style.setProperty('--background', colors.background);
+    document.documentElement.style.setProperty('--foreground', colors.foreground);
+    document.documentElement.style.setProperty('--primary', colors.primary);
+    document.documentElement.style.setProperty('--secondary', colors.secondary);
+    document.documentElement.style.setProperty('--accent', colors.accent);
     
-    // Apply text color
-    document.documentElement.style.setProperty('--theme-text', colors.text);
+    // Set derived variables (usually these would be calculated in CSS, but we're setting them directly)
+    document.documentElement.style.setProperty('--card', colors.background);
+    document.documentElement.style.setProperty('--card-foreground', colors.foreground);
+    document.documentElement.style.setProperty('--popover', colors.background);
+    document.documentElement.style.setProperty('--popover-foreground', colors.foreground);
+    document.documentElement.style.setProperty('--primary-foreground', currentTheme === 'focus' ? '240 10% 10%' : '0 0% 100%');
+    document.documentElement.style.setProperty('--secondary-foreground', currentTheme === 'focus' ? '240 10% 10%' : '0 0% 100%');
+    document.documentElement.style.setProperty('--muted', colors.background);
+    document.documentElement.style.setProperty('--muted-foreground', colors.primary);
+    document.documentElement.style.setProperty('--accent-foreground', colors.foreground);
     
-    // Apply accent color
-    document.documentElement.style.setProperty('--theme-accent', colors.accent);
-    
-    // Toggle dark mode if needed
+    // Toggle dark mode class if needed
     if (currentTheme === 'focus') {
       document.documentElement.classList.add('dark');
     } else {
@@ -276,7 +299,7 @@ return (
             aria-label="Default theme"
           >
             <div className="w-8 h-8 bg-blue-500 rounded-full mb-2"></div>
-            <span className="text-sm">Default</span>
+            <span className="text-sm">Standard</span>
           </button>
           <button 
             className={`aspect-square bg-gray-50 border flex flex-col items-center justify-center rounded-md transition-all ${theme === 'lowContrast' ? 'ring-2 ring-primary' : ''}`}
@@ -312,16 +335,16 @@ return (
             aria-label="Reading Mode theme"
           >
             <div className="w-8 h-8 bg-amber-600 rounded-full mb-2"></div>
-            <span className="text-sm">Reading Mode</span>
+            <span className="text-sm">Reading</span>
           </button>
           <button 
-            className={`aspect-square bg-gradient-to-br from-pink-100 to-blue-100 border flex flex-col items-center justify-center rounded-md transition-all ${theme === 'custom' ? 'ring-2 ring-primary' : ''}`}
+            className={`aspect-square bg-teal-50 border flex flex-col items-center justify-center rounded-md transition-all ${theme === 'custom' ? 'ring-2 ring-primary' : ''}`}
             onClick={() => setTheme('custom')}
             aria-pressed={theme === 'custom'}
             aria-label="Customizable theme"
           >
-            <div className="w-8 h-8 bg-gradient-to-r from-pink-500 to-blue-500 rounded-full mb-2"></div>
-            <span className="text-sm">Customizable</span>
+            <div className="w-8 h-8 bg-teal-600 rounded-full mb-2"></div>
+            <span className="text-sm">Soft Focus</span>
           </button>
         </div>
       </div>
@@ -415,8 +438,8 @@ return (
         style={{
           fontFamily: getFontDisplayName(fontFamily).split(" ")[0],
           fontSize: `${fontSize}px`,
-          background: themeColors[theme]?.bg || "white",
-          color: themeColors[theme]?.text || "black"
+          backgroundColor: `hsl(${themeColors[theme]?.background || "0 0% 100%"})`,
+          color: `hsl(${themeColors[theme]?.foreground || "0 0% 0%"})`
         }}
       >
         {/* Dynamic spacing based on layout density */}
@@ -426,20 +449,20 @@ return (
           <div className={`grid grid-cols-2 ${layoutDensity === "compact" ? "gap-2" : layoutDensity === "comfortable" ? "gap-6" : "gap-4"}`}>
             <div className={`${layoutDensity === "compact" ? "p-1" : layoutDensity === "comfortable" ? "p-4" : "p-2"} rounded`} 
                  style={{ 
-                   background: themeColors[theme]?.accent || "blue", 
-                   color: theme === 'focus' ? 'white' : 'black'
+                   backgroundColor: `hsl(${themeColors[theme]?.primary || "0 0% 50%"})`,
+                   color: theme === 'focus' ? `hsl(${themeColors[theme]?.background})` : 'white'
                  }}>
               Panel item 1
             </div>
             <div className={`${layoutDensity === "compact" ? "p-1" : layoutDensity === "comfortable" ? "p-4" : "p-2"} rounded`}
                  style={{ 
-                   background: themeColors[theme]?.accent || "blue", 
-                   color: theme === 'focus' ? 'white' : 'black'
+                   backgroundColor: `hsl(${themeColors[theme]?.secondary || "0 0% 60%"})`,
+                   color: theme === 'focus' ? `hsl(${themeColors[theme]?.background})` : 'white'
                  }}>
               Panel item 2
             </div>
           </div>
-          <p className="text-sm opacity-70">Changes won't be applied globally until you save.</p>
+          <p style={{ opacity: 0.7 }}>Changes won't be applied globally until you save.</p>
         </div>
       </div>
     </div>
