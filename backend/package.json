@@ -1,0 +1,23 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "backend for Idiomaster",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "test",
+    "start": "node index.js",
+    "dev": "nodemon index.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^latest",
+    "mongoose": "^latest",
+    "dotenv": "^latest",
+    "cors": "^latest"
+  },
+  "devDependencies": {
+    "nodemon": "^latest"
+  }
+}
