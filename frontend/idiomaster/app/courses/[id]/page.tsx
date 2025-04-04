@@ -10,117 +10,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import Navbar from "@/components/layout/navbar"
-
-// Sample course data
-const coursesData = [
-  {
-    id: 1,
-    title: "Introduction to Web Development",
-    description: "Learn the fundamentals of web development including HTML, CSS, and JavaScript.",
-    instructor: "Jane Smith",
-    instructorTitle: "Senior Web Developer",
-    instructorBio: "Jane has over 10 years of experience in web development and has worked with major tech companies.",
-    level: "Beginner",
-    duration: "8 weeks",
-    rating: 4.7,
-    students: 1245,
-    category: "Programming",
-    image: "/placeholder.svg?height=400&width=600",
-    price: 49.99,
-    syllabus: [
-      {
-        title: "Introduction to HTML",
-        lessons: [
-          { title: "Basic HTML Structure", duration: "15 min", type: "video" },
-          { title: "HTML Elements and Attributes", duration: "20 min", type: "video" },
-          { title: "HTML Forms", duration: "25 min", type: "video" },
-          { title: "HTML Practice Exercise", duration: "30 min", type: "exercise" },
-        ],
-      },
-      {
-        title: "CSS Fundamentals",
-        lessons: [
-          { title: "CSS Selectors", duration: "18 min", type: "video" },
-          { title: "CSS Box Model", duration: "22 min", type: "video" },
-          { title: "CSS Layouts", duration: "28 min", type: "video" },
-          { title: "CSS Styling Exercise", duration: "35 min", type: "exercise" },
-        ],
-      },
-      {
-        title: "JavaScript Basics",
-        lessons: [
-          { title: "Variables and Data Types", duration: "20 min", type: "video" },
-          { title: "Functions and Control Flow", duration: "25 min", type: "video" },
-          { title: "DOM Manipulation", duration: "30 min", type: "video" },
-          { title: "JavaScript Exercise", duration: "40 min", type: "exercise" },
-        ],
-      },
-    ],
-    whatYouWillLearn: [
-      "Build responsive websites using HTML, CSS, and JavaScript",
-      "Understand core web development concepts",
-      "Create interactive web pages",
-      "Deploy websites to the internet",
-      "Optimize websites for different devices",
-      "Debug common web development issues",
-    ],
-    requirements: [
-      "Basic computer skills",
-      "No prior programming experience required",
-      "A computer with internet access",
-      "Text editor (recommendations will be provided)",
-    ],
-  },
-  {
-    id: 2,
-    title: "Advanced React Techniques",
-    description: "Master advanced React concepts including hooks, context API, and performance optimization.",
-    instructor: "John Doe",
-    instructorTitle: "React Specialist",
-    instructorBio:
-      "John is a React expert with experience building large-scale applications for Fortune 500 companies.",
-    level: "Advanced",
-    duration: "6 weeks",
-    rating: 4.9,
-    students: 876,
-    category: "Programming",
-    image: "/placeholder.svg?height=400&width=600",
-    price: 79.99,
-    syllabus: [
-      {
-        title: "Advanced Hooks",
-        lessons: [
-          { title: "Custom Hooks", duration: "25 min", type: "video" },
-          { title: "useReducer Deep Dive", duration: "30 min", type: "video" },
-          { title: "useCallback and useMemo", duration: "28 min", type: "video" },
-          { title: "Hooks Exercise", duration: "45 min", type: "exercise" },
-        ],
-      },
-      {
-        title: "State Management",
-        lessons: [
-          { title: "Context API Patterns", duration: "22 min", type: "video" },
-          { title: "Redux vs Context", duration: "26 min", type: "video" },
-          { title: "Zustand and Jotai", duration: "24 min", type: "video" },
-          { title: "State Management Exercise", duration: "40 min", type: "exercise" },
-        ],
-      },
-    ],
-    whatYouWillLearn: [
-      "Build complex React applications",
-      "Optimize React performance",
-      "Implement advanced state management",
-      "Create reusable React components",
-      "Test React applications",
-    ],
-    requirements: [
-      "Solid understanding of JavaScript",
-      "Basic knowledge of React",
-      "Familiarity with ES6+ syntax",
-      "Node.js installed on your computer",
-    ],
-  },
-]
+import { coursesData } from "@/app/data/courses"
 
 export default function CourseDetailPage() {
   const params = useParams()
@@ -157,8 +47,8 @@ export default function CourseDetailPage() {
 
       <div className="bg-muted py-12">
         <div className="container grid gap-8 md:grid-cols-2">
-          <div className="space-y-4">
-            <div className="flex items-center space-x-2">
+          <div className="space-y-4 ml-3 mr-2">
+            <div className="flex items-center space-x-2 ">
               <Link href="/courses" className="text-sm font-medium text-muted-foreground hover:underline">
                 Courses
               </Link>
@@ -188,7 +78,7 @@ export default function CourseDetailPage() {
             </div>
             <div className="flex items-center space-x-2">
               <img
-                src="/placeholder.svg?height=50&width=50"
+                src="https://static.vecteezy.com/system/resources/thumbnails/020/765/399/small_2x/default-profile-account-unknown-icon-black-silhouette-free-vector.jpg"
                 alt={course.instructor}
                 className="h-10 w-10 rounded-full"
               />
@@ -246,7 +136,7 @@ export default function CourseDetailPage() {
             <TabsTrigger value="curriculum">Curriculum</TabsTrigger>
             <TabsTrigger value="instructor">Instructor</TabsTrigger>
           </TabsList>
-          <TabsContent value="overview" className="space-y-8">
+          <TabsContent value="overview" className="space-y-8 ml-4">
             <div className="space-y-4">
               <h2 className="text-2xl font-bold">What You Will Learn</h2>
               <div className="grid gap-3 sm:grid-cols-2">
@@ -320,7 +210,7 @@ export default function CourseDetailPage() {
           <TabsContent value="instructor" className="space-y-6">
             <div className="flex flex-col items-start space-y-4 sm:flex-row sm:space-x-4 sm:space-y-0">
               <img
-                src="/placeholder.svg?height=150&width=150"
+                src="https://static.vecteezy.com/system/resources/thumbnails/020/765/399/small_2x/default-profile-account-unknown-icon-black-silhouette-free-vector.jpg"
                 alt={course.instructor}
                 className="h-24 w-24 rounded-full object-cover sm:h-32 sm:w-32"
               />
