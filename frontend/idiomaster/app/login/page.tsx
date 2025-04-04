@@ -31,14 +31,27 @@ export default function LoginPage() {
     setIsLoading(true);
 
     try {
-      // Simulate login process
-      await new Promise((resolve) => setTimeout(resolve, 1500));
+      const response = await fetch("http://localhost:5000/api/users/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Login failed");
+      }
+
+      const data = await response.json();
       localStorage.setItem("loggedIn", "true");
       setLoggedIn(true); // Update the loggedIn state
+      alert("Login successful!");
       router.push("/courses");
     } catch (error) {
       console.error("Login failed:", error);
-      alert("Login failed. Please try again.");
+      alert(error.message);
     } finally {
       setIsLoading(false);
     }
