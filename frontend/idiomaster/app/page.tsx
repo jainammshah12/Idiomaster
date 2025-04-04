@@ -1,13 +1,16 @@
 "use client";
 
+
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { useState } from "react";
+import { useUser } from "@/context/UserContext";
 
 import { Button } from "@/components/ui/button";
 import Navbar from "@/components/layout/navbar";
 
 export default function Home() {
+  const { loggedIn } = useUser();
   const courseDescriptions = [
     {
       id:1,
@@ -46,11 +49,19 @@ export default function Home() {
                     Browse Courses <ArrowRight className="ml-2 h-4 w-4" />
                   </Button>
                 </Link>
+                { loggedIn ? 
+                <Link href="/profile">
+                  <Button variant="outline" className="px-8">
+                    Access Profile
+                  </Button>
+                </Link>
+                :
                 <Link href="/login">
                   <Button variant="outline" className="px-8">
                     Sign In
                   </Button>
                 </Link>
+                }
               </div>
             </div>
           </div>
