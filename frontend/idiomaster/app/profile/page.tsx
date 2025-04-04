@@ -39,10 +39,17 @@ const Profile = () => {
           <span>
             <button onClick={() => router.push("profile/settings")}>Settings</button>
           </span>
-          <span>Help</span>
+          <span>
+          <span>
+            <button onClick={() => router.push("profile/help")}>Help</button>
+          </span>
+          </span>
           <div className="flex items-center space-x-2">
             <img src={user.avatar} alt="Avatar" className="w-8 h-8 rounded-full" />
-            <span>{user.name}</span>
+            <span>
+              <button onClick={() => router.push("/profile/profilemanagement")}>{user.name}</button>
+              {user.name}
+            </span>
           </div>
         </div>
       </div>
@@ -63,9 +70,8 @@ const Profile = () => {
             {["M", "T", "W", "T", "F", "S", "S"].map((day, index) => (
               <div
                 key={index}
-                className={`w-8 h-8 flex items-center justify-center mx-auto rounded-full border-2 ${
-                  index < user.highestStreak ? "bg-green-500 border-green-700" : "bg-gray-300 border-gray-500"
-                }`}
+                className={`w-8 h-8 flex items-center justify-center mx-auto rounded-full border-2 ${index < user.highestStreak ? "bg-green-500 border-green-700" : "bg-gray-300 border-gray-500"
+                  }`}
               >
                 <span className="text-black font-bold">{day}</span>
               </div>
@@ -105,9 +111,8 @@ const Profile = () => {
               .map((_, index) => (
                 <div
                   key={index}
-                  className={`w-8 h-8 flex items-center justify-center mx-auto rounded-full border-2 ${
-                    index >= 23 ? "bg-green-500 border-green-700" : "bg-gray-300 border-gray-500"
-                  }`}
+                  className={`w-8 h-8 flex items-center justify-center mx-auto rounded-full border-2 ${index >= 23 ? "bg-green-500 border-green-700" : "bg-gray-300 border-gray-500"
+                    }`}
                 >
                   <span className="text-black font-bold">{index + 1}</span>
                 </div>
@@ -116,17 +121,45 @@ const Profile = () => {
         </div>
         <div className="p-4 bg-white rounded shadow">
           <h3>Badges Earned</h3>
-          <div className="grid grid-cols-3 gap-2 mt-2">
-            {Array(6)
-              .fill(0)
-              .map((_, i) => (
-                <div key={i} className="w-6 h-6 bg-gray-400 rounded-full"></div>
-              ))}
+          <div className="grid grid-cols-3 gap-4 mt-4">
+            {[
+              { name: "Intermediate", icon: "🎖️" },
+              { name: "Advanced", icon: "🥇" },
+              { name: "Expert", icon: "🏆" },
+              { name: "Streak Master", icon: "🔥" },
+              { name: "Quiz Champion", icon: "📚" },
+              { name: "Problem Solver", icon: "🧠" },
+
+            ].map((badge, index) => (
+              <div
+                key={index}
+                className="flex flex-col items-center justify-center p-2 bg-gray-100 rounded shadow"
+              >
+                <div className="text-2xl">{badge.icon}</div>
+                <p className="text-xs font-semibold mt-1">{badge.name}</p>
+              </div>
+            ))}
           </div>
         </div>
         <div className="p-4 bg-white rounded shadow">
           <h3>Notifications</h3>
-          <p>Quiz Reminder</p>
+          <div className="space-y-2 mt-2">
+            {[
+              { message: "You completed a new course!", read: false },
+              { message: "Your weekly streak is on fire! 🔥", read: true },
+              { message: "New badge earned: Quiz Champion 📚", read: false },
+              { message: "Reminder: Complete your daily quiz!", read: true },
+              { message: "You leveled up to Level 6! 🎉", read: false },
+            ].map((notification, index) => (
+              <div
+                key={index}
+                className={`p-2 rounded ${notification.read ? "bg-gray-100 text-gray-500" : "bg-blue-100 text-blue-800"
+                  }`}
+              >
+                {notification.message}
+              </div>
+            ))}
+          </div>
         </div>
       </div>
 
