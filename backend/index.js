@@ -2,7 +2,7 @@ import express from "express";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
 import cors from "cors";
-import userRoutes from "./routes/userRoutes.js"; // Import routes after app is initialized
+import userRoutes from "./routes/userRoutes.js";
 
 dotenv.config();
 
@@ -23,7 +23,6 @@ mongoose.connect(MONGO_URI)
   .then(() => console.log("MongoDB Connected"))
   .catch(err => console.error("MongoDB Connection Error:", err));
 
-// Define routes after initializing `app`
 app.use("/api/users", userRoutes);
 
 app.get("/", (req, res) => {
