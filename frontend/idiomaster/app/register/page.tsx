@@ -11,7 +11,6 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { useUser } from "@/context/UserContext";
 
@@ -23,7 +22,7 @@ export default function RegisterPage() {
     name: "",
     email: "",
     password: "",
-    accountType: "student",
+    accountType: "student", // Default to "student"
   })
 
   const { setUser } = useUser();
@@ -51,7 +50,7 @@ export default function RegisterPage() {
           name: formData.name,
           email: formData.email,
           password: formData.password,
-          role: formData.accountType,
+          role: formData.accountType, // Send the selected role
         }),
       });
 
@@ -63,8 +62,8 @@ export default function RegisterPage() {
       const userData = { name: formData.name, role: formData.accountType };
       setUser(userData); // Set user in context
       alert("Registration successful!");
-      router.push("/courses");
-    } catch (error) {
+      router.push("/courses"); // Redirect to courses page after successful registration
+    } catch (error: any) {
       console.error("Registration failed:", error);
       alert(error.message);
     } finally {
@@ -190,24 +189,8 @@ export default function RegisterPage() {
                     </Button>
                   </div>
                 </div>
-                <div className="space-y-2">
-                  <Label htmlFor="credentials">Credentials/Expertise</Label>
-                  <Input id="credentials" name="credentials" placeholder="Your qualifications or expertise" />
-                </div>
               </TabsContent>
             </Tabs>
-            <div className="hidden">
-              <RadioGroup value={formData.accountType} onValueChange={handleRadioChange}>
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="student" id="student" />
-                  <Label htmlFor="student">Student</Label>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="educator" id="educator" />
-                  <Label htmlFor="educator">Educator</Label>
-                </div>
-              </RadioGroup>
-            </div>
           </CardContent>
           <CardFooter className="flex flex-col">
             <Button className="w-full" type="submit" disabled={isLoading}>
