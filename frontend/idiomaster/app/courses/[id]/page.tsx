@@ -46,8 +46,8 @@ export default function CourseDetailPage() {
       <Navbar />
 
       <div className="bg-muted py-12">
-        <div className="container grid gap-8 md:grid-cols-2">
-          <div className="space-y-4 ml-3 mr-2">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl grid gap-8 md:grid-cols-2">
+          <div className="space-y-4">
             <div className="flex items-center space-x-2 ">
               <Link href="/courses" className="text-sm font-medium text-muted-foreground hover:underline">
                 Courses
@@ -129,7 +129,7 @@ export default function CourseDetailPage() {
         </div>
       </div>
 
-      <div className="container py-12">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl py-12">
         <Tabs defaultValue="overview" className="w-full">
           <TabsList className="mb-8 w-full justify-start">
             <TabsTrigger value="overview">Overview</TabsTrigger>
