@@ -18,7 +18,9 @@ import { applyThemeGlobally, savePreferencesToStorage, loadPreferencesFromStorag
 // Import components
 import ThemeSelector from "./Theme/ThemeSelector"
 import ThemePreview from "./Theme/ThemePreview"
-import Snackbar from "../Snackbar"
+
+// Import toast context
+import { useToast } from "../../context/ToastContext"
 
 export default function InterfaceSettings() {
   // State for current settings (for preview)
@@ -33,9 +35,9 @@ export default function InterfaceSettings() {
   // State for tracking changes and saved state
   const [hasChanges, setHasChanges] = useState(false)
   const [isSaving, setIsSaving] = useState(false)
-  const [saveMessage, setSaveMessage] = useState("")
-  const [saveStatus, setSaveStatus] = useState<"success" | "error" | "">("")
-  const [showSnackbar, setShowSnackbar] = useState(false)
+  
+  // Use the toast context
+  const { showToast } = useToast();
   
   // Load saved preferences on component mount
   useEffect(() => {
@@ -93,35 +95,13 @@ export default function InterfaceSettings() {
       // Apply settings globally
       applyThemeGlobally(theme, fontSize, fontFamily, layoutDensity)
       
-      // Show success message
-      setSaveMessage("Your interface preferences have been updated.")
-      setSaveStatus("success")
-      setShowSnackbar(true)
-      
-      // Clear message after 10 seconds
-      setTimeout(() => {
-        setShowSnackbar(false)
-        setTimeout(() => {
-          setSaveMessage("")
-          setSaveStatus("")
-        }, 300) // Allow time for fade-out animation
-      }, 10000)
+      // Show success toast
+      showToast("Your interface preferences have been updated.", "success")
       
       setHasChanges(false)
     } catch (error) {
       console.error("Error saving preferences:", error)
-      setSaveMessage("There was a problem saving your settings.")
-      setSaveStatus("error")
-      setShowSnackbar(true)
-      
-      // Clear message after 10 seconds
-      setTimeout(() => {
-        setShowSnackbar(false)
-        setTimeout(() => {
-          setSaveMessage("")
-          setSaveStatus("")
-        }, 300) // Allow time for fade-out animation
-      }, 10000)
+      showToast("There was a problem saving your settings.", "error")
     } finally {
       setIsSaving(false)
     }
@@ -252,13 +232,6 @@ export default function InterfaceSettings() {
           </Button>
         </div>
       </div>
-      
-      {/* Snackbar Notification */}
-      <Snackbar 
-        message={saveMessage}
-        status={saveStatus}
-        visible={showSnackbar}
-      />
     </div>
   )
 }
