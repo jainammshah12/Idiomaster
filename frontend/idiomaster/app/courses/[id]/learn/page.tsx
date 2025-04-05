@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button"
 import { Progress } from "@/components/ui/progress"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { coursesData } from "@/app/data/courses"
 
 // Add these type definitions at the top of the file, after imports
 interface VideoContent {
@@ -39,96 +40,6 @@ type Lesson = {
 function isExerciseLesson(lesson: Lesson): lesson is ExerciseContent & { id: number; title: string; duration: string } {
   return lesson.type === "exercise";
 }
-
-// Sample course data
-const coursesData = [
-  {
-    id: 1,
-    title: "Introduction to Web Development",
-    syllabus: [
-      {
-        title: "Introduction to HTML",
-        lessons: [
-          {
-            id: 1,
-            title: "Basic HTML Structure",
-            duration: "15 min",
-            type: "video",
-            content: {
-              videoUrl: "https://example.com/video1.mp4",
-              transcript: "In this lesson, we'll learn about the basic structure of HTML documents...",
-              description:
-                "HTML (HyperText Markup Language) is the standard markup language for documents designed to be displayed in a web browser.",
-            },
-          },
-          {
-            id: 2,
-            title: "HTML Elements and Attributes",
-            duration: "20 min",
-            type: "video",
-            content: {
-              videoUrl: "https://example.com/video2.mp4",
-              transcript: "HTML elements are represented by tags...",
-              description:
-                "HTML elements are the building blocks of HTML pages. HTML elements are represented by tags.",
-            },
-          },
-          {
-            id: 3,
-            title: "HTML Forms",
-            duration: "25 min",
-            type: "video",
-            content: {
-              videoUrl: "https://example.com/video3.mp4",
-              transcript: "HTML forms are used to collect user input...",
-              description:
-                "An HTML form is used to collect user input. The user input is most often sent to a server for processing.",
-            },
-          },
-          {
-            id: 4,
-            title: "HTML Practice Exercise",
-            duration: "30 min",
-            type: "exercise",
-            content: {
-              instructions: "Create a simple HTML page with a header, navigation, main content, and footer.",
-              resources: ["HTML cheat sheet", "Example code"],
-              submissionType: "Code upload",
-            },
-          },
-        ],
-      },
-      {
-        title: "CSS Fundamentals",
-        lessons: [
-          {
-            id: 5,
-            title: "CSS Selectors",
-            duration: "18 min",
-            type: "video",
-            content: {
-              videoUrl: "https://example.com/video5.mp4",
-              transcript: "CSS selectors are used to select HTML elements...",
-              description: "CSS selectors are used to 'find' (or select) the HTML elements you want to style.",
-            },
-          },
-          {
-            id: 6,
-            title: "CSS Box Model",
-            duration: "22 min",
-            type: "video",
-            content: {
-              videoUrl: "https://example.com/video6.mp4",
-              transcript: "The CSS box model is essentially a box that wraps around every HTML element...",
-              description:
-                "The CSS box model is essentially a box that wraps around every HTML element. It consists of: margins, borders, padding, and the actual content.",
-            },
-          },
-        ],
-      },
-    ],
-  },
-]
 
 export default function CourseLearnPage() {
   const params = useParams()
@@ -275,7 +186,7 @@ export default function CourseLearnPage() {
           </div>
         </aside>
         <main className="flex-1">
-          <div className="container max-w-4xl py-6">
+          <div className="container ml-6 max-w-4xl py-6">
             <div className="mb-6">
               <h1 className="text-2xl font-bold">{currentLesson.title}</h1>
               <p className="text-muted-foreground">
