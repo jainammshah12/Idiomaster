@@ -15,12 +15,19 @@ const ThemeSelector: React.FC<ThemeSelectorProps> = ({ selectedTheme, onThemeCha
         {Object.entries(themeColors).map(([key, theme]) => (
           <button 
             key={key}
-            className={`aspect-square ${theme.isDark ? 'bg-gray-900 text-white' : 'bg-white'} border flex flex-col items-center justify-center rounded-md transition-all ${selectedTheme === key ? 'ring-2 ring-primary' : ''}`}
+            style={{ 
+              backgroundColor: `hsl(${theme.colors.background})`,
+              color: `hsl(${theme.colors.foreground})`
+            }}
+            className={`aspect-square border flex flex-col items-center justify-center rounded-md transition-all ${selectedTheme === key ? 'ring-2 ring-primary' : ''}`}
             onClick={() => onThemeChange(key as ThemeKey)}
             aria-pressed={selectedTheme === key}
             aria-label={`${theme.name} theme`}
           >
-            <div className={`w-8 h-8 ${theme.previewColor} rounded-full mb-2`}></div>
+            <div 
+              className="w-8 h-8 rounded-full mb-2"
+              style={{ backgroundColor: `hsl(${theme.colors.primary})` }}
+            ></div>
             <span className="text-sm">{theme.name}</span>
           </button>
         ))}
