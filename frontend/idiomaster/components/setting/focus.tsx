@@ -1,12 +1,61 @@
 "use client"
 
+import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Slider } from "@/components/ui/slider"
+import { useToast } from "../../context/ToastContext"
 
 export default function FocusSettings() {
+  // State for form values
+  const [focusDuration, setFocusDuration] = useState(25)
+  const [breakDuration, setBreakDuration] = useState(5)
+  const [autoStartBreaks, setAutoStartBreaks] = useState(true)
+  const [autoStartFocus, setAutoStartFocus] = useState(false)
+  const [blockNotifications, setBlockNotifications] = useState(true)
+  const [focusMode, setFocusMode] = useState(true)
+  const [backgroundSound, setBackgroundSound] = useState("none")
+  const [soundVolume, setSoundVolume] = useState([50])
+  
+  // Track if saving is in progress
+  const [isSaving, setIsSaving] = useState(false)
+  
+  // Get toast functionality
+  const { showToast } = useToast()
+  
+  // Handle form submission
+  const handleSaveChanges = () => {
+    setIsSaving(true)
+    
+    // Validate inputs
+    if (focusDuration < 5 || focusDuration > 120) {
+      showToast("Focus duration must be between 5 and 120 minutes", "error")
+      setIsSaving(false)
+      return
+    }
+    
+    if (breakDuration < 1 || breakDuration > 30) {
+      showToast("Break duration must be between 1 and 30 minutes", "error")
+      setIsSaving(false)
+      return
+    }
+    
+    // Simulate API call
+    setTimeout(() => {
+      try {
+        // Here you would normally save to an API
+        // For now we'll just show a success message
+        showToast("Focus settings saved successfully!", "success")
+        setIsSaving(false)
+      } catch (error) {
+        showToast("Failed to save focus settings", "error")
+        setIsSaving(false)
+      }
+    }, 1000)
+  }
+  
   return (
     <>
       <h2 className="text-xl font-bold mb-6">Focus Tools</h2>
@@ -23,7 +72,8 @@ export default function FocusSettings() {
                   type="number" 
                   min={5} 
                   max={120} 
-                  defaultValue={25} 
+                  value={focusDuration}
+                  onChange={(e) => setFocusDuration(Number(e.target.value))}
                 />
               </div>
               <div>
@@ -33,7 +83,8 @@ export default function FocusSettings() {
                   type="number" 
                   min={1} 
                   max={30} 
-                  defaultValue={5} 
+                  value={breakDuration}
+                  onChange={(e) => setBreakDuration(Number(e.target.value))}
                 />
               </div>
             </div>
@@ -47,7 +98,8 @@ export default function FocusSettings() {
                   type="checkbox"
                   id="auto-start-breaks"
                   className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
-                  defaultChecked
+                  checked={autoStartBreaks}
+                  onChange={(e) => setAutoStartBreaks(e.target.checked)}
                 />
               </div>
             </div>
@@ -61,6 +113,8 @@ export default function FocusSettings() {
                   type="checkbox"
                   id="auto-start-focus"
                   className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
+                  checked={autoStartFocus}
+                  onChange={(e) => setAutoStartFocus(e.target.checked)}
                 />
               </div>
             </div>
@@ -79,7 +133,8 @@ export default function FocusSettings() {
                   type="checkbox"
                   id="block-notifications"
                   className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
-                  defaultChecked
+                  checked={blockNotifications}
+                  onChange={(e) => setBlockNotifications(e.target.checked)}
                 />
               </div>
             </div>
@@ -93,7 +148,8 @@ export default function FocusSettings() {
                   type="checkbox"
                   id="focus-mode"
                   className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
-                  defaultChecked
+                  checked={focusMode}
+                  onChange={(e) => setFocusMode(e.target.checked)}
                 />
               </div>
             </div>
@@ -104,7 +160,10 @@ export default function FocusSettings() {
           <h3 className="text-base font-medium">Background Sounds</h3>
           <div className="space-y-3">
             <div>
-              <Select defaultValue="none">
+              <Select 
+                value={backgroundSound}
+                onValueChange={setBackgroundSound}
+              >
                 <SelectTrigger className="w-full">
                   <SelectValue placeholder="Select background sound" />
                 </SelectTrigger>
@@ -125,8 +184,10 @@ export default function FocusSettings() {
                 min={0}
                 max={100}
                 step={1}
-                defaultValue={[50]}
+                value={soundVolume}
+                onValueChange={setSoundVolume}
                 className="w-full"
+                disabled={backgroundSound === "none"}
               />
             </div>
           </div>
@@ -134,7 +195,12 @@ export default function FocusSettings() {
         
         {/* Save Button */}
         <div className="flex justify-end mt-6">
-          <Button>Save Changes</Button>
+          <Button 
+            onClick={handleSaveChanges}
+            disabled={isSaving}
+          >
+            {isSaving ? "Saving..." : "Save Changes"}
+          </Button>
         </div>
       </div>
     </>
