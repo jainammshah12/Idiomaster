@@ -1,9 +1,9 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import Link from "next/link"
 import { useParams, useSearchParams } from "next/navigation"
-import { ChevronLeft, ChevronRight, FileText, Home, List, PlayCircle, Volume2, X } from "lucide-react"
+import { ChevronLeft, ChevronRight, FileText, Home, List, PlayCircle, Volume2, PauseCircle, X } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { Progress } from "@/components/ui/progress"
@@ -82,6 +82,8 @@ export default function CourseLearnPage() {
   
   const [currentLessonId, setCurrentLessonId] = useState<number | null>(null)
   const [sidebarOpen, setSidebarOpen] = useState(false)
+  const [isSpeaking, setIsSpeaking] = useState(false)
+  const speechSynthRef = useRef<SpeechSynthesisUtterance | null>(null)
 
   const course = coursesData.find((c) => c.id === courseId)
   
@@ -101,6 +103,51 @@ export default function CourseLearnPage() {
       }
     }
   }, [course, initialLessonId])
+  
+  // Clean up speech synthesis when component unmounts or lesson changes
+  useEffect(() => {
+    return () => {
+      if (speechSynthRef.current) {
+        window.speechSynthesis.cancel()
+      }
+    }
+  }, [currentLessonId])
+
+  // Function to handle text-to-speech
+  const handleTextToSpeech = () => {
+    if (!currentLesson || currentLesson.type !== "video") return;
+    
+    // If already speaking, stop it
+    if (isSpeaking) {
+      window.speechSynthesis.cancel()
+      setIsSpeaking(false)
+      return
+    }
+
+    // Get the transcript text
+    const transcriptText = currentLesson.content.transcript || "Transcript not available."
+    
+    // Create a new SpeechSynthesisUtterance instance
+    const utterance = new SpeechSynthesisUtterance(transcriptText)
+    
+    // Store reference for cleanup
+    speechSynthRef.current = utterance
+    
+    // Set event handlers
+    utterance.onend = () => {
+      setIsSpeaking(false)
+      speechSynthRef.current = null
+    }
+    
+    utterance.onerror = () => {
+      setIsSpeaking(false)
+      speechSynthRef.current = null
+    }
+    
+    // Start speaking
+    window.speechSynthesis.speak(utterance)
+    setIsSpeaking(true)
+  }
 
   if (!course) {
     return (
@@ -280,9 +327,22 @@ export default function CourseLearnPage() {
                     <div className="rounded-lg border p-4">
                       <div className="flex items-center justify-between mb-4">
                         <h3 className="font-medium">Transcript</h3>
-                        <Button variant="outline" size="sm">
-                          <Volume2 className="mr-2 h-4 w-4" />
-                          Text-to-Speech
+                        <Button 
+                          variant="outline" 
+                          size="sm"
+                          onClick={handleTextToSpeech}
+                        >
+                          {isSpeaking ? (
+                            <>
+                              <PauseCircle className="mr-2 h-4 w-4" />
+                              Stop Reading
+                            </>
+                          ) : (
+                            <>
+                              <Volume2 className="mr-2 h-4 w-4" />
+                              Text-to-Speech
+                            </>
+                          )}
                         </Button>
                       </div>
                       <p className="text-sm">{currentLesson.content.transcript}</p>
