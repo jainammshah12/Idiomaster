@@ -1,22 +1,23 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect, useRef } from "react"
 import Link from "next/link"
-import { useParams } from "next/navigation"
-import { ChevronLeft, ChevronRight, FileText, Home, List, PlayCircle, Volume2, X } from "lucide-react"
+import { useParams, useSearchParams } from "next/navigation"
+import { ChevronLeft, ChevronRight, FileText, Home, List, PlayCircle, Volume2, PauseCircle, X } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { Progress } from "@/components/ui/progress"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { coursesData } from "@/app/data/courses"
 
-// Add these type definitions at the top of the file, after imports
+// Type definitions for lessons
 interface VideoContent {
   type: "video";
   content: {
-    videoUrl: string;
-    transcript: string;
-    description: string;
+    videoUrl?: string;
+    transcript?: string;
+    description?: string;
   };
 }
 
@@ -35,108 +36,118 @@ type Lesson = {
   duration: string;
 } & (VideoContent | ExerciseContent);
 
-// Add this helper function after the type definitions
+// Helper function to check if lesson is exercise type
 function isExerciseLesson(lesson: Lesson): lesson is ExerciseContent & { id: number; title: string; duration: string } {
   return lesson.type === "exercise";
 }
 
-// Sample course data
-const coursesData = [
-  {
-    id: 1,
-    title: "Introduction to Web Development",
-    syllabus: [
-      {
-        title: "Introduction to HTML",
-        lessons: [
-          {
-            id: 1,
-            title: "Basic HTML Structure",
-            duration: "15 min",
-            type: "video",
-            content: {
-              videoUrl: "https://example.com/video1.mp4",
-              transcript: "In this lesson, we'll learn about the basic structure of HTML documents...",
-              description:
-                "HTML (HyperText Markup Language) is the standard markup language for documents designed to be displayed in a web browser.",
-            },
-          },
-          {
-            id: 2,
-            title: "HTML Elements and Attributes",
-            duration: "20 min",
-            type: "video",
-            content: {
-              videoUrl: "https://example.com/video2.mp4",
-              transcript: "HTML elements are represented by tags...",
-              description:
-                "HTML elements are the building blocks of HTML pages. HTML elements are represented by tags.",
-            },
-          },
-          {
-            id: 3,
-            title: "HTML Forms",
-            duration: "25 min",
-            type: "video",
-            content: {
-              videoUrl: "https://example.com/video3.mp4",
-              transcript: "HTML forms are used to collect user input...",
-              description:
-                "An HTML form is used to collect user input. The user input is most often sent to a server for processing.",
-            },
-          },
-          {
-            id: 4,
-            title: "HTML Practice Exercise",
-            duration: "30 min",
-            type: "exercise",
-            content: {
-              instructions: "Create a simple HTML page with a header, navigation, main content, and footer.",
-              resources: ["HTML cheat sheet", "Example code"],
-              submissionType: "Code upload",
-            },
-          },
-        ],
-      },
-      {
-        title: "CSS Fundamentals",
-        lessons: [
-          {
-            id: 5,
-            title: "CSS Selectors",
-            duration: "18 min",
-            type: "video",
-            content: {
-              videoUrl: "https://example.com/video5.mp4",
-              transcript: "CSS selectors are used to select HTML elements...",
-              description: "CSS selectors are used to 'find' (or select) the HTML elements you want to style.",
-            },
-          },
-          {
-            id: 6,
-            title: "CSS Box Model",
-            duration: "22 min",
-            type: "video",
-            content: {
-              videoUrl: "https://example.com/video6.mp4",
-              transcript: "The CSS box model is essentially a box that wraps around every HTML element...",
-              description:
-                "The CSS box model is essentially a box that wraps around every HTML element. It consists of: margins, borders, padding, and the actual content.",
-            },
-          },
-        ],
-      },
-    ],
-  },
-]
+// Helper function to ensure lesson content is properly structured
+function normalizeLesson(lesson: any): Lesson {
+  // Ensure content object exists with proper structure
+  if (lesson.type === "video") {
+    return {
+      id: lesson.id,
+      title: lesson.title,
+      duration: lesson.duration,
+      type: "video",
+      content: {
+        videoUrl: lesson.content?.videoUrl || "",
+        transcript: lesson.content?.transcript || "Transcript not available.",
+        description: lesson.content?.description || "No description available."
+      }
+    };
+  } else {
+    return {
+      id: lesson.id,
+      title: lesson.title,
+      duration: lesson.duration,
+      type: "exercise",
+      content: {
+        instructions: lesson.content?.instructions || "Complete the exercise as instructed.",
+        resources: Array.isArray(lesson.content?.resources) ? lesson.content.resources : [],
+        submissionType: lesson.content?.submissionType || "Submit your work"
+      }
+    };
+  }
+}
 
 export default function CourseLearnPage() {
   const params = useParams()
+  const searchParams = useSearchParams()
   const courseId = Number(params.id)
-  const [currentLessonId, setCurrentLessonId] = useState(1)
+  
+  // Get lesson ID from URL query parameter, defaulting to null if not provided
+  const lessonParam = searchParams.get('lesson')
+  const initialLessonId = lessonParam ? Number(lessonParam) : null
+  
+  const [currentLessonId, setCurrentLessonId] = useState<number | null>(null)
   const [sidebarOpen, setSidebarOpen] = useState(false)
+  const [isSpeaking, setIsSpeaking] = useState(false)
+  const speechSynthRef = useRef<SpeechSynthesisUtterance | null>(null)
 
   const course = coursesData.find((c) => c.id === courseId)
+  
+  // Initialize lesson data after course is loaded
+  useEffect(() => {
+    if (course) {
+      const allLessons = course.syllabus.flatMap((section) => 
+        section.lessons.map(lesson => normalizeLesson(lesson))
+      )
+      
+      // If a specific lesson was requested via URL and it exists, use that
+      if (initialLessonId && allLessons.some(lesson => lesson.id === initialLessonId)) {
+        setCurrentLessonId(initialLessonId)
+      } else {
+        // Otherwise default to the first lesson
+        setCurrentLessonId(allLessons[0]?.id || null)
+      }
+    }
+  }, [course, initialLessonId])
+  
+  // Clean up speech synthesis when component unmounts or lesson changes
+  useEffect(() => {
+    return () => {
+      if (speechSynthRef.current) {
+        window.speechSynthesis.cancel()
+      }
+    }
+  }, [currentLessonId])
+
+  // Function to handle text-to-speech
+  const handleTextToSpeech = () => {
+    if (!currentLesson || currentLesson.type !== "video") return;
+    
+    // If already speaking, stop it
+    if (isSpeaking) {
+      window.speechSynthesis.cancel()
+      setIsSpeaking(false)
+      return
+    }
+
+    // Get the transcript text
+    const transcriptText = currentLesson.content.transcript || "Transcript not available."
+    
+    // Create a new SpeechSynthesisUtterance instance
+    const utterance = new SpeechSynthesisUtterance(transcriptText)
+    
+    // Store reference for cleanup
+    speechSynthRef.current = utterance
+    
+    // Set event handlers
+    utterance.onend = () => {
+      setIsSpeaking(false)
+      speechSynthRef.current = null
+    }
+    
+    utterance.onerror = () => {
+      setIsSpeaking(false)
+      speechSynthRef.current = null
+    }
+    
+    // Start speaking
+    window.speechSynthesis.speak(utterance)
+    setIsSpeaking(true)
+  }
 
   if (!course) {
     return (
@@ -150,16 +161,22 @@ export default function CourseLearnPage() {
     )
   }
 
-  // Flatten all lessons for easier navigation
-  const allLessons = course.syllabus.flatMap((section) => section.lessons) as Lesson[]
-  const currentLesson = allLessons.find((lesson) => lesson.id === currentLessonId) as Lesson
-  const currentLessonIndex = allLessons.findIndex((lesson) => lesson.id === currentLessonId)
-  const nextLesson = allLessons[currentLessonIndex + 1]
-  const prevLesson = allLessons[currentLessonIndex - 1]
-
-  // Calculate progress
-  const progress = ((currentLessonIndex + 1) / allLessons.length) * 100
-
+  // Process all lessons, normalizing their structure
+  const allLessons = course.syllabus.flatMap((section) => 
+    section.lessons.map(lesson => normalizeLesson(lesson))
+  )
+  
+  // Don't proceed if currentLessonId isn't set yet
+  if (currentLessonId === null) {
+    return (
+      <div className="container flex h-[70vh] flex-col items-center justify-center">
+        <h1 className="text-2xl font-bold">Loading lesson...</h1>
+      </div>
+    )
+  }
+  
+  const currentLesson = allLessons.find((lesson) => lesson.id === currentLessonId)
+  
   if (!currentLesson) {
     return (
       <div className="container flex h-[70vh] flex-col items-center justify-center">
@@ -171,6 +188,13 @@ export default function CourseLearnPage() {
       </div>
     )
   }
+
+  const currentLessonIndex = allLessons.findIndex((lesson) => lesson.id === currentLessonId)
+  const nextLesson = allLessons[currentLessonIndex + 1]
+  const prevLesson = allLessons[currentLessonIndex - 1]
+
+  // Calculate progress
+  const progress = ((currentLessonIndex + 1) / allLessons.length) * 100
 
   return (
     <div className="flex min-h-screen flex-col">
@@ -275,7 +299,7 @@ export default function CourseLearnPage() {
           </div>
         </aside>
         <main className="flex-1">
-          <div className="container max-w-4xl py-6">
+          <div className="container ml-6 max-w-4xl py-6">
             <div className="mb-6">
               <h1 className="text-2xl font-bold">{currentLesson.title}</h1>
               <p className="text-muted-foreground">
@@ -303,9 +327,22 @@ export default function CourseLearnPage() {
                     <div className="rounded-lg border p-4">
                       <div className="flex items-center justify-between mb-4">
                         <h3 className="font-medium">Transcript</h3>
-                        <Button variant="outline" size="sm">
-                          <Volume2 className="mr-2 h-4 w-4" />
-                          Text-to-Speech
+                        <Button 
+                          variant="outline" 
+                          size="sm"
+                          onClick={handleTextToSpeech}
+                        >
+                          {isSpeaking ? (
+                            <>
+                              <PauseCircle className="mr-2 h-4 w-4" />
+                              Stop Reading
+                            </>
+                          ) : (
+                            <>
+                              <Volume2 className="mr-2 h-4 w-4" />
+                              Text-to-Speech
+                            </>
+                          )}
                         </Button>
                       </div>
                       <p className="text-sm">{currentLesson.content.transcript}</p>
@@ -317,7 +354,7 @@ export default function CourseLearnPage() {
               <div className="rounded-lg border p-6">
                 <h2 className="mb-4 text-xl font-semibold">Exercise Instructions</h2>
                 <p className="mb-4">{currentLesson.content.instructions}</p>
-                {isExerciseLesson(currentLesson) && (
+                {isExerciseLesson(currentLesson) && currentLesson.content.resources.length > 0 && (
                   <>
                     <h3 className="mb-2 font-medium">Resources</h3>
                     <ul className="mb-6 list-inside list-disc space-y-1">
@@ -353,4 +390,3 @@ export default function CourseLearnPage() {
     </div>
   )
 }
-

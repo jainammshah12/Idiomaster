@@ -12,84 +12,10 @@ import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTr
 import { Slider } from "@/components/ui/slider"
 import Navbar from "@/components/layout/navbar"
 import LoginPage from "@/app/login/page";
-
+import { courses } from "@/app/data/course-content";
 
 // Sample course data
-const courses = [
-  
-  {
-    id: 1,
-    title: "Introduction to Web Development",
-    description: "Learn the fundamentals of web development including HTML, CSS, and JavaScript.",
-    instructor: "Jane Smith",
-    level: "Beginner",
-    duration: "8 weeks",
-    rating: 4.7,
-    students: 1245,
-    category: "Programming",
-    image: "/placeholder.svg?height=200&width=300",
-  },
-  {
-    id: 2,
-    title: "Advanced React Techniques",
-    description: "Master advanced React concepts including hooks, context API, and performance optimization.",
-    instructor: "John Doe",
-    level: "Advanced",
-    duration: "6 weeks",
-    rating: 4.9,
-    students: 876,
-    category: "Programming",
-    image: "/placeholder.svg?height=200&width=300",
-  },
-  {
-    id: 3,
-    title: "Data Science Fundamentals",
-    description: "An introduction to data science concepts, tools, and methodologies.",
-    instructor: "Alex Johnson",
-    level: "Intermediate",
-    duration: "10 weeks",
-    rating: 4.5,
-    students: 1532,
-    category: "Data Science",
-    image: "/placeholder.svg?height=200&width=300",
-  },
-  {
-    id: 4,
-    title: "UX/UI Design Principles",
-    description: "Learn the core principles of user experience and interface design.",
-    instructor: "Sarah Williams",
-    level: "Beginner",
-    duration: "5 weeks",
-    rating: 4.6,
-    students: 987,
-    category: "Design",
-    image: "/placeholder.svg?height=200&width=300",
-  },
-  {
-    id: 5,
-    title: "Machine Learning Essentials",
-    description: "A comprehensive introduction to machine learning algorithms and applications.",
-    instructor: "Michael Chen",
-    level: "Intermediate",
-    duration: "12 weeks",
-    rating: 4.8,
-    students: 1876,
-    category: "Data Science",
-    image: "/placeholder.svg?height=200&width=300",
-  },
-  {
-    id: 6,
-    title: "Digital Marketing Strategies",
-    description: "Learn effective digital marketing strategies for business growth.",
-    instructor: "Emily Rodriguez",
-    level: "Beginner",
-    duration: "4 weeks",
-    rating: 4.4,
-    students: 2134,
-    category: "Marketing",
-    image: "/placeholder.svg?height=200&width=300",
-  },
-]
+
 
 export default function CoursesPage() {
   const [searchTerm, setSearchTerm] = useState("")
@@ -108,9 +34,9 @@ export default function CoursesPage() {
   })
 
   return (
-    <div className="min-h-screen bg-background ml-5 mr-5 ">
-      <Navbar loggedIn ={loggedIn} setLoggedIn={setLoggedIn} />
-      <main className="container py-8">
+    <div className="min-h-screen bg-background">
+      <Navbar />
+      <main className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl py-8">
         <div className="flex flex-col space-y-6">
           <div className="flex flex-col space-y-4 md:flex-row md:items-center md:justify-between md:space-y-0">
             <div>

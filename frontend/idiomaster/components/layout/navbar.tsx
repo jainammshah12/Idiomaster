@@ -9,11 +9,11 @@ export default function Navbar() {
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="container flex h-14 items-center">
-        <Link href="/" className="flex items-center space-x-2 ml-5 mr-5 font-bold">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl flex h-14 items-center justify-between">
+        <Link href="/" className="flex items-center space-x-2 font-bold">
           <span>Idiomaster</span>
         </Link>
-        <nav className="ml-auto flex gap-4 sm:gap-6">
+        <nav className="flex gap-4 sm:gap-6">
           {loggedIn ? (
             <>
               <Link href="/profile" className="text-sm font-medium">
