@@ -1,11 +1,11 @@
 # Idiomaster
 
-A project developed by:
-Jainam Shah (40190627)
-Daniel François (40212980)
-Ryan Mazari (40241379)
-Jutipong Puntuleng (40080233)
-Maharaj Teertha Deb (40227747)
+A learning platform project for neurodivergent students developed by Neural Interfaces team:
+- Jainam Shah (40190627)
+- Daniel François (40212980)
+- Ryan Mazari (40241379)
+- Jutipong Puntuleng (40080233)
+- Maharaj Teertha Deb (40227747)
 
 
 ## Overview
@@ -18,7 +18,7 @@ Before running the React app, ensure you have the following tools installed:
 
 - **Node.js** (LTS version recommended) - [Download here](https://nodejs.org/)
 - **npm** (comes bundled with Node.js) or **yarn** (optional) - [Install Yarn](https://yarnpkg.com/getting-started/install)
-- A code editor (e.g., Visual Studio Code, Sublime Text, etc.)
+- A code editor (e.g., Visual Studio Code)
 
 ## Getting Started
 
@@ -38,7 +38,9 @@ npm install
 ```
 npm run dev
 ```
-
+The application should now be running on localhost:3000
 
 ## Learning Platform
 Few screenshots of the learning platform we built.
+
+
