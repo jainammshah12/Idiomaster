@@ -23,6 +23,7 @@ export const coursesData = [
             duration: "15 min", 
             type: "video",
             content: {
+              videoId: "BvJYXl2ywUE",
               videoUrl: "https://example.com/video1.mp4",
               transcript: "In this lesson, we'll learn about the basic structure of HTML documents...",
               description: "HTML (HyperText Markup Language) is the standard markup language for documents designed to be displayed in a web browser."
@@ -34,6 +35,7 @@ export const coursesData = [
             duration: "20 min", 
             type: "video",
             content: {
+              videoId: "",
               videoUrl: "https://example.com/video2.mp4",
               transcript: "HTML elements are represented by tags...",
               description: "HTML elements are the building blocks of HTML pages. HTML elements are represented by tags."

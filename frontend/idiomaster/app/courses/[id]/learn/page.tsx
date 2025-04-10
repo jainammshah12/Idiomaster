@@ -15,6 +15,7 @@ import { coursesData } from "@/app/data/courses"
 interface VideoContent {
   type: "video";
   content: {
+    videoId?: string; // Add this line
     videoUrl?: string;
     transcript?: string;
     description?: string;
@@ -51,6 +52,7 @@ function normalizeLesson(lesson: any): Lesson {
       duration: lesson.duration,
       type: "video",
       content: {
+        videoId: lesson.content?.videoId || "",
         videoUrl: lesson.content?.videoUrl || "",
         transcript: lesson.content?.transcript || "Transcript not available.",
         description: lesson.content?.description || "No description available."
@@ -310,9 +312,19 @@ export default function CourseLearnPage() {
             {currentLesson.type === "video" ? (
               <div className="space-y-6">
                 <div className="overflow-hidden rounded-lg bg-black aspect-video">
-                  <div className="flex h-full items-center justify-center">
-                    <PlayCircle className="h-16 w-16 text-white opacity-70" />
-                  </div>
+                  {currentLesson.content.videoId ? (
+                    <iframe
+                      className="w-full h-full"
+                      src={`https://www.youtube.com/embed/${currentLesson.content.videoId}`}
+                      title={currentLesson.title}
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allowFullScreen
+                    />
+                  ) : (
+                    <div className="flex h-full items-center justify-center">
+                      <PlayCircle className="h-16 w-16 text-white opacity-70" />
+                    </div>
+                  )}
                 </div>
 
                 <Tabs defaultValue="content">
