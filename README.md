@@ -40,9 +40,8 @@ npm run dev
 ```
 The application should now be running on localhost:3000
 
-## Learning Platform
-Few screenshots of the learning platform we built.
 
+## Backend
 
 This is the backend for Idiomaster. It allows teachers to create courses and students to enroll, purchase, and track achievements. The backend is built using **Node.js** with **MongoDB Atlas** as the database.
 
@@ -69,10 +68,9 @@ This is the backend for Idiomaster. It allows teachers to create courses and stu
 
 ## 📌 Getting Started
 
-### 1️⃣ Clone the Repository
+### 1️⃣ Navigate to the bakend directory(from the main directory)
 ```sh
-git clone https://github.com/your-repo/learning-platform-backend.git
-cd learning-platform-backend
+cd backend
 ```
 
 ### 2️⃣ Install Dependencies
@@ -136,6 +134,3 @@ Response:
   }
 }
 ```
-
-For any issues, open a GitHub issue or contact the developer! 🎉
-
