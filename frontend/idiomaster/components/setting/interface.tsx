@@ -1,81 +1,138 @@
 "use client"
 
-import { useState } from "react"
+import React, { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Slider } from "@/components/ui/slider"
 
+// Import types
+import { FontKey, DensityKey, ThemeKey, UserPreferences } from "../../types/theme"
+
+// Import data
+import { fontDisplayNames, defaultPreferences } from "../../data/themeData"
+
+// Import utilities
+import { applyThemeGlobally, savePreferencesToStorage, loadPreferencesFromStorage } from "../../utils/themeUtils"
+
+// Import components
+import ThemeSelector from "./Theme/ThemeSelector"
+import ThemePreview from "./Theme/ThemePreview"
+
+// Import toast context
+import { useToast } from "../../context/ToastContext"
+
 export default function InterfaceSettings() {
-  const [theme, setTheme] = useState("default")
-  const [fontSize, setFontSize] = useState(16)
-  const [fontFamily, setFontFamily] = useState("arial")
-  const [layoutDensity, setLayoutDensity] = useState("balance")
+  // State for current settings (for preview)
+  const [theme, setTheme] = useState<ThemeKey>(defaultPreferences.theme)
+  const [fontSize, setFontSize] = useState<number>(defaultPreferences.fontSize)
+  const [fontFamily, setFontFamily] = useState<FontKey>(defaultPreferences.fontFamily)
+  const [layoutDensity, setLayoutDensity] = useState<DensityKey>(defaultPreferences.layoutDensity)
+  
+  // State for applied settings (global)
+  const [appliedSettings, setAppliedSettings] = useState<UserPreferences>(defaultPreferences)
+  
+  // State for tracking changes and saved state
+  const [hasChanges, setHasChanges] = useState(false)
+  const [isSaving, setIsSaving] = useState(false)
+  
+  // Use the toast context
+  const { showToast } = useToast();
+  
+  // Load saved preferences on component mount
+  useEffect(() => {
+    const preferences = loadPreferencesFromStorage();
+    
+    if (preferences) {
+      // Set preview state
+      setTheme(preferences.theme)
+      setFontSize(preferences.fontSize)
+      setFontFamily(preferences.fontFamily)
+      setLayoutDensity(preferences.layoutDensity)
+      
+      // Set applied state
+      setAppliedSettings(preferences)
+      
+      // Apply settings globally
+      applyThemeGlobally(
+        preferences.theme,
+        preferences.fontSize,
+        preferences.fontFamily,
+        preferences.layoutDensity
+      )
+    }
+  }, [])
+  
+  // Track changes by comparing with applied settings
+  useEffect(() => {
+    setHasChanges(
+      theme !== appliedSettings.theme || 
+      fontSize !== appliedSettings.fontSize || 
+      fontFamily !== appliedSettings.fontFamily || 
+      layoutDensity !== appliedSettings.layoutDensity
+    )
+  }, [theme, fontSize, fontFamily, layoutDensity, appliedSettings])
+  
+  // Handle saving preferences
+  const savePreferences = () => {
+    setIsSaving(true)
+    
+    try {
+      // Create new preferences object
+      const newPreferences: UserPreferences = {
+        theme,
+        fontSize,
+        fontFamily,
+        layoutDensity
+      }
+      
+      // Save to localStorage
+      savePreferencesToStorage(newPreferences)
+      
+      // Update applied settings
+      setAppliedSettings(newPreferences)
+      
+      // Apply settings globally
+      applyThemeGlobally(theme, fontSize, fontFamily, layoutDensity)
+      
+      // Show success toast
+      showToast("Your interface preferences have been updated.", "success")
+      
+      setHasChanges(false)
+    } catch (error) {
+      console.error("Error saving preferences:", error)
+      showToast("There was a problem saving your settings.", "error")
+    } finally {
+      setIsSaving(false)
+    }
+  }
+  
+  // Function to reset to defaults
+  const resetToDefaults = () => {
+    setTheme(defaultPreferences.theme)
+    setFontSize(defaultPreferences.fontSize)
+    setFontFamily(defaultPreferences.fontFamily)
+    setLayoutDensity(defaultPreferences.layoutDensity)
+  }
   
   return (
-    <>
+    <div className={`transition-all duration-300 ${appliedSettings.layoutDensity === "compact" ? "p-2" : appliedSettings.layoutDensity === "comfortable" ? "p-8" : "p-4"}`}>
       <h2 className="text-xl font-bold mb-6">Interface Customization</h2>
       
       <div className="space-y-6">
         {/* Color Theme */}
-        <div>
-          <h3 className="text-base font-medium mb-4" id="color-theme">Color Theme</h3>
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-4" role="radiogroup" aria-labelledby="color-theme">
-            <button 
-              className={`aspect-square bg-gray-200 flex items-center justify-center rounded-md ${theme === 'default' ? 'ring-2 ring-primary' : ''}`}
-              onClick={() => setTheme('default')}
-              aria-pressed={theme === 'default'}
-              aria-label="Default theme"
-            >
-              <span className="text-sm">Default</span>
-            </button>
-            <button 
-              className={`aspect-square bg-gray-200 flex items-center justify-center rounded-md ${theme === 'lowContrast' ? 'ring-2 ring-primary' : ''}`}
-              onClick={() => setTheme('lowContrast')}
-              aria-pressed={theme === 'lowContrast'}
-              aria-label="Low Contrast theme"
-            >
-              <span className="text-sm">Low Contrast</span>
-            </button>
-            <button 
-              className={`aspect-square bg-gray-200 flex items-center justify-center rounded-md ${theme === 'focus' ? 'ring-2 ring-primary' : ''}`}
-              onClick={() => setTheme('focus')}
-              aria-pressed={theme === 'focus'}
-              aria-label="Focus Mode theme"
-            >
-              <span className="text-sm">Focus Mode</span>
-            </button>
-            <button 
-              className={`aspect-square bg-gray-200 flex items-center justify-center rounded-md ${theme === 'calm' ? 'ring-2 ring-primary' : ''}`}
-              onClick={() => setTheme('calm')}
-              aria-pressed={theme === 'calm'}
-              aria-label="Calm Mode theme"
-            >
-              <span className="text-sm">Calm Mode</span>
-            </button>
-            <button 
-              className={`aspect-square bg-gray-200 flex items-center justify-center rounded-md ${theme === 'reading' ? 'ring-2 ring-primary' : ''}`}
-              onClick={() => setTheme('reading')}
-              aria-pressed={theme === 'reading'}
-              aria-label="Reading Mode theme"
-            >
-              <span className="text-sm">Reading Mode</span>
-            </button>
-            <button 
-              className={`aspect-square bg-gray-200 flex items-center justify-center rounded-md ${theme === 'custom' ? 'ring-2 ring-primary' : ''}`}
-              onClick={() => setTheme('custom')}
-              aria-pressed={theme === 'custom'}
-              aria-label="Customizable theme"
-            >
-              <span className="text-sm">Customizable</span>
-            </button>
-          </div>
-        </div>
+        <ThemeSelector 
+          selectedTheme={theme} 
+          onThemeChange={setTheme} 
+        />
         
-        {/* Font Type */}
+        {/* Font Type with preview */}
         <div className="space-y-2">
           <Label htmlFor="font-type">Font Type</Label>
-          <Select value={fontFamily} onValueChange={setFontFamily}>
+          <Select 
+            value={fontFamily} 
+            onValueChange={(value) => setFontFamily(value as FontKey)}
+          >
             <SelectTrigger className="w-full" id="font-type">
               <SelectValue placeholder="Select a font" />
             </SelectTrigger>
@@ -87,12 +144,19 @@ export default function InterfaceSettings() {
               <SelectItem value="verdana">Verdana (Sans-serif)</SelectItem>
             </SelectContent>
           </Select>
+          
+          {/* Font preview */}
+          <div className="mt-2 p-3 border rounded bg-card">
+            <p style={{ fontFamily: fontDisplayNames[fontFamily].split(" ")[0] }}>
+              The quick brown fox jumps over the lazy dog.
+            </p>
+          </div>
         </div>
         
-        {/* Font Size */}
+        {/* Font Size with live preview */}
         <div className="space-y-2">
           <div className="flex justify-between">
-            <Label htmlFor="font-size">Font Size</Label>
+            <Label htmlFor="font-size">Font Size: {fontSize}px</Label>
             <div className="bg-muted px-2 py-1 rounded">
               <span className="text-xs font-medium">SAMPLE TEXT</span>
             </div>
@@ -102,16 +166,26 @@ export default function InterfaceSettings() {
             min={12}
             max={24}
             step={1}
-            defaultValue={[fontSize]}
+            value={[fontSize]}
             onValueChange={(value) => setFontSize(value[0])}
             className="w-full"
           />
+          
+          {/* Font size preview */}
+          <div className="mt-2 p-3 border rounded bg-card">
+            <p style={{ fontSize: `${fontSize}px` }}>
+              This text shows the selected font size.
+            </p>
+          </div>
         </div>
         
-        {/* Layout Density */}
+        {/* Layout Density with preview */}
         <div className="space-y-2">
           <Label htmlFor="layout-density">Layout Density</Label>
-          <Select value={layoutDensity} onValueChange={setLayoutDensity}>
+          <Select 
+            value={layoutDensity} 
+            onValueChange={(value) => setLayoutDensity(value as DensityKey)}
+          >
             <SelectTrigger className="w-full" id="layout-density">
               <SelectValue placeholder="Select layout density" />
             </SelectTrigger>
@@ -121,13 +195,43 @@ export default function InterfaceSettings() {
               <SelectItem value="comfortable">Comfortable - Increased Spacing</SelectItem>
             </SelectContent>
           </Select>
+          
+          {/* Density preview */}
+          <div className="mt-2 border rounded bg-card overflow-hidden">
+            <div className={`p-2 ${layoutDensity === "compact" ? "space-y-1" : layoutDensity === "comfortable" ? "space-y-4" : "space-y-2"}`}>
+              <div className="bg-muted p-2 rounded">Item 1</div>
+              <div className="bg-muted p-2 rounded">Item 2</div>
+              <div className="bg-muted p-2 rounded">Item 3</div>
+            </div>
+          </div>
         </div>
         
-        {/* Save Button */}
-        <div className="flex justify-end mt-6">
-          <Button>Save Changes</Button>
+        {/* Theme Preview */}
+        <ThemePreview
+          theme={theme}
+          fontSize={fontSize}
+          fontFamily={fontFamily}
+          layoutDensity={layoutDensity}
+        />
+        
+        {/* Action Buttons */}
+        <div className="flex justify-between mt-6">
+          <Button 
+            variant="outline" 
+            onClick={resetToDefaults}
+            disabled={isSaving}
+          >
+            Reset to Defaults
+          </Button>
+          
+          <Button 
+            onClick={savePreferences}
+            disabled={!hasChanges || isSaving}
+          >
+            {isSaving ? "Saving..." : "Save Changes"}
+          </Button>
         </div>
       </div>
-    </>
+    </div>
   )
 }
