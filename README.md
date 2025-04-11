@@ -81,6 +81,8 @@ npm install
 ### 3️⃣ Set Up MongoDB Atlas
 copy and paste the .env file in the backend folder.
 
+- sometimes when you download .env file, it downloads as env, so you might need to add a .(dot) at the front to make it .env
+
 ### 4️⃣ Run the Server
 For development:
 ```sh
