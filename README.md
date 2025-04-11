@@ -40,7 +40,7 @@ npm run dev
 ```
 The application should now be running on localhost:3000
 
-
+---
 ## Backend
 
 This is the backend for Idiomaster. It allows teachers to create courses and students to enroll, purchase, and track achievements. The backend is built using **Node.js** with **MongoDB Atlas** as the database.
@@ -79,7 +79,7 @@ npm install
 ```
 
 ### 3️⃣ Set Up MongoDB Atlas
-1. copy and paste the .env file in the backend folder.
+copy and paste the .env file in the backend folder.
 
 ### 4️⃣ Run the Server
 For development:
