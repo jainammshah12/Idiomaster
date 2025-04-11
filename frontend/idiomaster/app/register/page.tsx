@@ -11,8 +11,8 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { useUser } from "@/context/UserContext";
 
 export default function RegisterPage() {
   const router = useRouter()
@@ -22,8 +22,10 @@ export default function RegisterPage() {
     name: "",
     email: "",
     password: "",
-    accountType: "student",
+    accountType: "student", // Default to "student"
   })
+
+  const { setUser } = useUser();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target
@@ -35,15 +37,39 @@ export default function RegisterPage() {
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setIsLoading(true)
+    e.preventDefault();
+    setIsLoading(true);
 
-    // Simulate registration process
-    setTimeout(() => {
-      setIsLoading(false)
-      router.push("/courses")
-    }, 1500)
-  }
+    try {
+      const response = await fetch("http://localhost:5000/api/users/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: formData.name,
+          email: formData.email,
+          password: formData.password,
+          role: formData.accountType, // Send the selected role
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Registration failed");
+      }
+
+      const userData = { name: formData.name, role: formData.accountType };
+      setUser(userData); // Set user in context
+      alert("Registration successful!");
+      router.push("/courses"); // Redirect to courses page after successful registration
+    } catch (error: any) {
+      console.error("Registration failed:", error);
+      alert(error.message);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <div className="container mx-auto flex min-h-screen w-full flex-col items-center justify-center px-4">
@@ -163,24 +189,8 @@ export default function RegisterPage() {
                     </Button>
                   </div>
                 </div>
-                <div className="space-y-2">
-                  <Label htmlFor="credentials">Credentials/Expertise</Label>
-                  <Input id="credentials" name="credentials" placeholder="Your qualifications or expertise" />
-                </div>
               </TabsContent>
             </Tabs>
-            <div className="hidden">
-              <RadioGroup value={formData.accountType} onValueChange={handleRadioChange}>
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="student" id="student" />
-                  <Label htmlFor="student">Student</Label>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="educator" id="educator" />
-                  <Label htmlFor="educator">Educator</Label>
-                </div>
-              </RadioGroup>
-            </div>
           </CardContent>
           <CardFooter className="flex flex-col">
             <Button className="w-full" type="submit" disabled={isLoading}>

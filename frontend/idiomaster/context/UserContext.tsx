@@ -1,19 +1,27 @@
 "use client";
 
-import React, { createContext, useContext, useState, ReactNode } from "react";
+import React, { createContext, useContext, useState } from "react";
 
-interface UserContextProps {
-  loggedIn: boolean;
-  setLoggedIn: (value: boolean) => void;
+interface User {
+  name: string;
+  role: string;
 }
 
-const UserContext = createContext<UserContextProps | undefined>(undefined);
+interface UserContextType {
+  user: User | null;
+  setUser: (user: User | null) => void;
+  loggedIn: boolean;
+  setLoggedIn: (loggedIn: boolean) => void;
+}
 
-export const UserProvider = ({ children }: { children: ReactNode }) => {
-  const [loggedIn, setLoggedIn] = useState(false);
+const UserContext = createContext<UserContextType | undefined>(undefined);
+
+export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const [user, setUser] = useState<User | null>(null);
+  const [loggedIn, setLoggedIn] = useState<boolean>(false);
 
   return (
-    <UserContext.Provider value={{ loggedIn, setLoggedIn }}>
+    <UserContext.Provider value={{ user, setUser, loggedIn, setLoggedIn }}>
       {children}
     </UserContext.Provider>
   );

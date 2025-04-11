@@ -13,7 +13,7 @@ import { useUser } from "@/context/UserContext";
 
 export default function LoginPage() {
   const router = useRouter();
-  const { setLoggedIn } = useUser();
+  const { setUser, setLoggedIn } = useUser();
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
@@ -26,19 +26,32 @@ export default function LoginPage() {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
 
     try {
-      // Simulate login process
-      await new Promise((resolve) => setTimeout(resolve, 1500));
-      localStorage.setItem("loggedIn", "true");
-      setLoggedIn(true); // Update the loggedIn state
+      const response = await fetch("http://localhost:5000/api/users/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Login failed");
+      }
+
+      const { user } = await response.json();
+      setUser(user); // Set the user in context
+      setLoggedIn(true); // Mark the user as logged in
+      alert("Login successful!");
       router.push("/courses");
-    } catch (error) {
+    } catch (error: any) {
       console.error("Login failed:", error);
-      alert("Login failed. Please try again.");
+      alert(error.message);
     } finally {
       setIsLoading(false);
     }
@@ -54,7 +67,7 @@ export default function LoginPage() {
           <CardTitle className="text-2xl font-bold">Login</CardTitle>
           <CardDescription>Enter your email and password to login to your account</CardDescription>
         </CardHeader>
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleLogin}>
           <CardContent className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
