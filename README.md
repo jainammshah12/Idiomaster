@@ -41,6 +41,5 @@ npm run dev
 The application should now be running on localhost:3000
 
 ## Learning Platform
-Few screenshots of the learning platform we built.
-
+Here is the link to the demo: https://drive.google.com/file/d/11sc6bTKzR1OpPs1Al1NVIAbOaRbB3kKT/view?usp=sharing 
 
